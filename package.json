@@ -1,6 +1,6 @@
 {
 	"name": "effect-blackfriday",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "An Effect.ts project for Black Friday deals",
 	"type": "module",
 	"main": "dist/index.js",
@@ -11,7 +11,10 @@
 			"import": "./dist/index.js"
 		}
 	},
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"clean": "rm -rf dist",
 		"prebuild": "bun run clean",
@@ -21,7 +24,11 @@
 		"test:ci": "vitest run --coverage",
 		"dev": "tsc --watch"
 	},
-	"keywords": ["effect", "typescript", "blackfriday"],
+	"keywords": [
+		"effect",
+		"typescript",
+		"blackfriday"
+	],
 	"author": "",
 	"license": "MIT",
 	"packageManager": "bun@1.0.0",
