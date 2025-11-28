@@ -1,0 +1,6 @@
+# Ignore docs directory for markdownlint
+/docs/**
+
+# Optional: ignore other markdown files in workspace root
+*.md
+!README.md

@@ -1,0 +1,6 @@
+# Ignore all markdown docs
+/docs/**/*.md
+/docs/**
+
+# Keep node_modules ignored
+node_modules/

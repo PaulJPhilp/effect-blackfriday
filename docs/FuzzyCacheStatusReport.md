@@ -4,6 +4,8 @@
 
 The FuzzyCache library has been **fully implemented** according to the design documents (PRD.md, Architecture.md, ImplementationPlan.md, TestingPlan.md). All 60 tests pass, TypeScript compilation succeeds with strict mode, and the implementation follows Effect 3.16+ patterns.
 
+**Built with:** Effect 3.19.8, TypeScript 5.8+, Bun 1.3.4
+
 ## Implementation Overview
 
 ### Files Created
@@ -56,6 +58,7 @@ The FuzzyCache library has been **fully implemented** according to the design do
 ### Key Implementation Details
 
 1. **exitToEffect helper** - Created custom helper since `Effect.fromExit` doesn't exist in Effect 3:
+
    ```typescript
    const exitToEffect = <A, E>(exit: Exit.Exit<A, E>): Effect.Effect<A, E> =>
        Exit.match(exit, {
@@ -89,10 +92,12 @@ The FuzzyCache library has been **fully implemented** according to the design do
 1. **TTL with TestClock** - TTL expiration tests not implemented with Effect's TestClock (deferred to future work per TestingPlan.md section 3.3)
 2. **Process-local only** - Storage is in-process `Ref<Map>`; no Redis/persistent storage
 3. **No score normalization** - Score is sum of field scores, not normalized to [0,1]
+4. **Unbounded embeddings memoization** - Embeddings cache is process-lifetime with no eviction; suitable for v1 but may need LRU/bounded cache for long-running services
 
 ## Future Enhancements Ready
 
 The implementation is designed to support future enhancements from `FutureEnhancements.md`:
+
 - **Persistent storage**: `FuzzyCacheStoreService` interface can be implemented with Redis/PostgreSQL
 - **Observability**: Entry points are well-defined for adding telemetry
 - **Schema validation**: `WithCachingConfig` can be extended for Zod/Effect Schema integration

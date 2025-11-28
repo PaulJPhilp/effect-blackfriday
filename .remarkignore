@@ -1,0 +1,4 @@
+# Ignore docs for remark-lint
+/docs/**
+
+# You can also ignore other markdowns if desired
