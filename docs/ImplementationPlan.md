@@ -1,6 +1,7 @@
 # Implementation Plan — FuzzyCache Library
 
 This plan assumes:
+
 - TypeScript + Effect 3.
 - `Effect.Service` (no Tags).
 - No `_` parameter in `Effect.gen`.
@@ -619,11 +620,11 @@ export const predictUserInterestsCached =
 ⸻
 
 8. Implementation Order Checklist
-	1.	Create types.ts and get the types compiling.
-	2.	Implement EmbeddingsService with memoization; stub rawEmbed.
-	3.	Implement FuzzyCacheStoreService with Ref<Map>.
-	4.	Implement match.ts (scoreEntry + matchBestEntry).
-	5.	Implement FuzzyCacheService (withCaching, withCachingMeta).
-	6.	Wire up examples.ts with your two functions.
-	7.	Add tests as per the Testing Plan (next doc).
+ 1. Create types.ts and get the types compiling.
+ 2. Implement EmbeddingsService with memoization; stub rawEmbed.
+ 3. Implement FuzzyCacheStoreService with Ref<Map>.
+ 4. Implement match.ts (scoreEntry + matchBestEntry).
+ 5. Implement FuzzyCacheService (withCaching, withCachingMeta).
+ 6. Wire up examples.ts with your two functions.
+ 7. Add tests as per the Testing Plan (next doc).
 

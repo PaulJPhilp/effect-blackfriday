@@ -8,7 +8,7 @@ Many Effect-based services are:
 - Deterministic with respect to their inputs.
 - “Fuzzy reusable”: you can often re-use a previous result when inputs are *similar enough* (prompt paraphrases, URL variants, higher reasoning levels).
 
-Today, we only have **exact** memoization primitives (e.g. `Effect.cachedFunction`, `cachedWithTTL`), which treat inputs as equal or not equal. 
+Today, we only have **exact** memoization primitives (e.g. `Effect.cachedFunction`, `cachedWithTTL`), which treat inputs as equal or not equal.
 
 We need a composition-friendly way to add **fuzzy, param-aware caching** to arbitrary `Effect` functions.
 
@@ -22,7 +22,7 @@ Provide a small library feature that lets developers wrap an `Effect`-returning 
 
 The API must:
 
-- Respect Effect 3 conventions (services, no Tags) and dependency injection.   
+- Respect Effect 3 conventions (services, no Tags) and dependency injection.
 - Integrate cleanly into existing projects without forcing storage or embedding engine choices.
 
 ## 1.3 Non-Goals
@@ -98,7 +98,7 @@ The API must:
   - Embeddings calls must be memoized to avoid repeated external calls.
 
 - **Testability**
-  - All time logic via `DateTime`/Clock, not `Date.now`.   
+  - All time logic via `DateTime`/Clock, not `Date.now`.
   - Services built with `Effect.Service` so they can be overridden in tests (e.g. fake `Embeddings` and `FuzzyCacheStore`).
 
 - **Reliability**

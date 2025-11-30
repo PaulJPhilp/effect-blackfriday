@@ -122,7 +122,7 @@ Create FuzzyCacheStoreService (e.g. src/fuzzy-cache/store.ts):
 
 type FuzzyCacheStore = {
   getAll<P, E, A>(cacheName: string): Effect.Effect<Iterable<CacheEntry<P, E, A>>>
-  put<P, E, A>(cacheName: string, entry: CacheEntry<P, E, A>): Effect.Effect<void>
+  put<P, E, A>(cacheName: string, entry: CacheEntry<P, E, A>): Effect.Effect<`void`>
 }
 
  • Backed by Ref<Map<string, Array<CacheEntry<any, any, any>>>>.
@@ -181,7 +181,7 @@ type FuzzyCache = {
   >
 }
 
- • Use Effect.Service (no Tags), no _ arg in Effect.gen.
+ • Use Effect.Service (no Tags), no _arg in Effect.gen.
  • Dependencies:
  • FuzzyCacheStoreService
  • EmbeddingsService
@@ -243,6 +243,7 @@ Implement tests according to docs/TestingPlan.md.
 5. Final Build & Test
 
 After implementation and tests are added:
+
  1. Run the full build (project’s main build script).
  2. Run the full test suite.
  3. Fix any type errors, lints, or test failures you introduced until:

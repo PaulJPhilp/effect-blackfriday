@@ -409,15 +409,15 @@ const fn = (params: { id: string }) =>
     : Effect.succeed("ok" as const)
 
 Tests:
-	1.	Failure cached
-	•	Call with { id: "bad" } → get failure.
-	•	Call again with { id: "bad" }.
-	•	Assert:
-	•	fn only called once.
-	•	Second call fails the same way (reused Exit.fail).
-	2.	Success independent of failure
-	•	After failure, call with { id: "good" }:
-	•	Assert success not affected by previous failure.
+ 1. Failure cached
+ • Call with { id: "bad" } → get failure.
+ • Call again with { id: "bad" }.
+ • Assert:
+ • fn only called once.
+ • Second call fails the same way (reused Exit.fail).
+ 2. Success independent of failure
+ • After failure, call with { id: "good" }:
+ • Assert success not affected by previous failure.
 
 ⸻
 
@@ -449,19 +449,19 @@ const summarizeWebsiteCached =
   })
 
 Tests:
-	1.	Same page, different hash
-	•	Call with URL ...#section1, then ...#section2, same prompt and reasoning.
-	•	Assert:
-	•	Underlying summarizeWebsite only invoked once.
-	2.	Paraphrased prompt
-	•	First call with prompt = "Explain X in simple terms".
-	•	Second call with prompt = "Describe X simply".
-	•	Use fake embed to ensure cosine similarity above threshold.
-	•	Assert second call hits cache.
-	3.	Lower reasoning level reuses higher
-	•	First call with reasoningLevel = high.
-	•	Second call with reasoningLevel = medium.
-	•	Assert second call reuses cached result (via MoreIsBetter).
+     1. Same page, different hash
+ • Call with URL ...#section1, then ...#section2, same prompt and reasoning.
+ • Assert:
+ • Underlying summarizeWebsite only invoked once.
+ 2. Paraphrased prompt
+ • First call with prompt = "Explain X in simple terms".
+ • Second call with prompt = "Describe X simply".
+ • Use fake embed to ensure cosine similarity above threshold.
+ • Assert second call hits cache.
+ 3. Lower reasoning level reuses higher
+ • First call with reasoningLevel = high.
+ • Second call with reasoningLevel = medium.
+ • Assert second call reuses cached result (via MoreIsBetter).
 
 ⸻
 
@@ -470,51 +470,51 @@ Tests:
 4.1 MoreIsBetter Monotonicity
 
 For numeric-like fields:
-	•	If cached >= requested and all other fields are equal (or valid per their fuzzy rules), then a cached entry should never be rejected by the MoreIsBetter logic.
+ • If cached >= requested and all other fields are equal (or valid per their fuzzy rules), then a cached entry should never be rejected by the MoreIsBetter logic.
 
 You can encode this as:
-	•	Generate small enum values (e.g. 0–3).
-	•	Assert: for any c ≥ r, scoreEntry with cached = c, requested = r doesn’t reject due to MoreIsBetter.
+ • Generate small enum values (e.g. 0–3).
+ • Assert: for any c ≥ r, scoreEntry with cached = c, requested = r doesn’t reject due to MoreIsBetter.
 
 4.2 CosineSimilarity Threshold
-	•	For a given threshold t, build simple test vectors where:
-	•	sim(v1, v2) > t → must accept.
-	•	sim(v1, v3) < t → must reject.
+ • For a given threshold t, build simple test vectors where:
+ • sim(v1, v2) > t → must accept.
+ • sim(v1, v3) < t → must reject.
 
 This helps guard against regressions if you tweak cosine logic.
 
 ⸻
 
 5. Test Infrastructure Notes
-	•	No real network calls in unit/integration tests:
-	•	Always override rawEmbed with an in-memory or deterministic fake.
-	•	Time control:
-	•	Use Effect’s Clock / DateTime and TestClock to simulate TTL behaviour instead of Date.now().
-	•	Isolation:
-	•	Each test should start with fresh instances of:
-	•	EmbeddingsService
-	•	FuzzyCacheStoreService
-	•	FuzzyCacheService
-	•	Avoid cross-test contamination (especially because we’re using process-local state like Ref / Map).
+     • No real network calls in unit/integration tests:
+     • Always override rawEmbed with an in-memory or deterministic fake.
+     • Time control:
+     • Use Effect’s Clock / DateTime and TestClock to simulate TTL behaviour instead of Date.now().
+     • Isolation:
+     • Each test should start with fresh instances of:
+     • EmbeddingsService
+     • FuzzyCacheStoreService
+     • FuzzyCacheService
+     • Avoid cross-test contamination (especially because we’re using process-local state like Ref / Map).
 
 ⸻
 
 6. Minimal “Done” Criteria
 
 You can call this Test Plan “satisfied” when:
-	1.	All unit tests:
-	•	Embeddings memoization.
-	•	Store behaviour.
-	•	Matching (ExactURL, CosineSimilarity, MoreIsBetter, exact match).
-	2.	All integration tests:
-	•	Basic caching.
-	•	TTL with TestClock.
-	•	Metadata via withCachingMeta.
-	•	Failure caching.
-	•	Realistic summarizeWebsite scenario.
-	3.	Property-style checks for:
-	•	MoreIsBetter monotonicity.
-	•	CosineSimilarity thresholds.
+     1. All unit tests:
+       • Embeddings memoization.
+       • Store behaviour.
+       • Matching (ExactURL, CosineSimilarity, MoreIsBetter, exact match).
+     2. All integration tests:
+       • Basic caching.
+       • TTL with TestClock.
+       • Metadata via withCachingMeta.
+       • Failure caching.
+       • Realistic summarizeWebsite scenario.
+     3. Property-style checks for:
+       • MoreIsBetter monotonicity.
+       • CosineSimilarity thresholds.
 
 At that point, you’ll have high confidence that the fuzzy cache behaves correctly and remains robust to changes.
 

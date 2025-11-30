@@ -9,36 +9,43 @@ This document captures *intentional* future work that's out of scope for v1 but 
 Before reading future enhancements, understand what v1 deliberately does **not** support:
 
 ### Embeddings Memoization
+
 - **v1:** Unbounded, process-lifetime memoization per `(text, model)`.
 - **Future:** Per-embedding TTL, size caps, or explicit cache clearing.
 - **Known issue:** Concurrent calls to `embed(text, model)` may result in duplicate `rawEmbed` calls if both miss the cache simultaneously. This is acceptable for moderate call volumes; v2 can add promise-style in-flight deduplication.
 
 ### Store / Cache Growth
+
 - **v1:** Unbounded in-memory storage per `cacheName`; entries are appended indefinitely.
 - **Future:** LRU eviction, max-entries-per-cacheName, or pluggable storage backends (Redis, SQLite).
 - **Consequence:** Long-running processes must monitor memory or restart periodically in v1.
 
 ### MoreIsBetter Field Types
+
 - **v1:** Numeric-only (e.g. `number`, `enum` with numeric values).
 - **Future:** Custom comparators to support string enums or other orderable types.
 - **Current workaround:** Use numeric fields and keep string labels as exact-match fields.
 
 ### String Enum MoreIsBetter
+
 - **v1:** Not supported. String enums like `"low" | "medium" | "high"` cannot use `MoreIsBetter`.
 - **Future:** Add custom comparator support.
 - **Workaround:** Use numeric enums or numeric wrapper fields.
 
 ### URL Normalization
+
 - **v1:** Minimal; relies on platform's `URL` class and `excludeHash` boolean.
 - **Future:** Aggressive normalization rules (query param ordering, trailing slash handling, etc.).
 - **Consequence:** `https://foo.com/` and `https://foo.com` may not be treated as identical; users can pre-normalize URLs in their code.
 
 ### Store Concurrency
+
 - **v1:** Ref-based, atomic updates per put, no global ordering guarantee.
 - **Future:** Explicit ordering semantics or distributed coordination if needed.
 - **Consequence:** Entry insertion order is "as observed" in a concurrent environment, not globally strict.
 
 ### Embedding Failures During Lookup
+
 - **v1:** Embedding errors cause a candidate to be skipped; lookup continues with other candidates.
 - **Future:** Configurable failure strategies (retry, fail fast, custom handler).
 - **Consequence:** A completely failed embedding service causes a cache miss, not an error propagation to the caller.
@@ -127,15 +134,15 @@ const summarizeWebsiteCached = FuzzyCacheBuilder
   .moreIsBetter("reasoningLevel")
   .build(summarizeWebsite)
 
-	•	Internally generates WithCachingConfig<Params>.
+ • Internally generates WithCachingConfig<Params>.
 
 4.2 Presets for Common Patterns
 
 Provide small helpers for typical LLM-y functions:
-	•	FuzzyCache.presets.llmWithPromptAndReasoning(fn, cacheName):
-	•	Preconfigures:
-	•	prompt → CosineSimilarity.
-	•	reasoningLevel → MoreIsBetter.
+ • FuzzyCache.presets.llmWithPromptAndReasoning(fn, cacheName):
+ • Preconfigures:
+ • prompt → CosineSimilarity.
+ • reasoningLevel → MoreIsBetter.
 
 ⸻
 
@@ -144,19 +151,19 @@ Provide small helpers for typical LLM-y functions:
 ### 6.1 Hooks / Events
 
 Add optional hooks on cache events:
-	•	onHit({ cacheName, kind, score, params })
-	•	onMiss({ cacheName, params })
-	•	onStore({ cacheName, params })
+ • onHit({ cacheName, kind, score, params })
+ • onMiss({ cacheName, params })
+ • onStore({ cacheName, params })
 
 These can be wired to:
-	•	Logging (for debugging fuzzy behaviour).
-	•	Metrics backends (Prometheus, OpenTelemetry, etc.).
+ • Logging (for debugging fuzzy behaviour).
+ • Metrics backends (Prometheus, OpenTelemetry, etc.).
 
 ### 6.2 Introspection Helpers
-	•	A debug function:
-	•	FuzzyCache.inspect(cacheName) → returns current entries (or summaries) for inspection in dev tools.
-	•	Optional trace mode:
-	•	When enabled, log per-field similarity scores and which candidate won.
+ • A debug function:
+ • FuzzyCache.inspect(cacheName) → returns current entries (or summaries) for inspection in dev tools.
+ • Optional trace mode:
+ • When enabled, log per-field similarity scores and which candidate won.
 
 ⸻
 
@@ -167,17 +174,17 @@ These can be wired to:
 Current: Caller gets { kind, score } from withCachingMeta and must make its own decision.
 
 Enhancements:
-	•	Helper combinators:
-	•	withScoreThreshold(fn, config, minScore) that:
-	•	Uses fuzzy cache.
-	•	If kind === "fuzzy" and score < minScore, automatically bypasses the cache and recomputes.
+ • Helper combinators:
+ • withScoreThreshold(fn, config, minScore) that:
+ • Uses fuzzy cache.
+ • If kind === "fuzzy" and score < minScore, automatically bypasses the cache and recomputes.
 
 ### 7.2 Result Validation Hooks
 
 For safety-critical paths:
-	•	Allow a validation function:
-	•	validate(params, value) => boolean | Effect<boolean>
-	•	If validation fails, treat as a miss and recompute (or propagate an error).
+ • Allow a validation function:
+ • validate(params, value) => boolean | Effect<boolean>
+ • If validation fails, treat as a miss and recompute (or propagate an error).
 
 ⸻
 
@@ -186,14 +193,14 @@ For safety-critical paths:
 ### 8.1 Test Utilities
 
 Provide small helpers for tests:
-	•	Fake EmbeddingsService layer for deterministic cosine similarity.
-	•	Helper to build synthetic CacheEntry sets for matchBestEntry tests.
+ • Fake EmbeddingsService layer for deterministic cosine similarity.
+ • Helper to build synthetic CacheEntry sets for matchBestEntry tests.
 
 ### 8.2 Benchmarks
 
 Add micro-benchmarks for:
-	•	matchBestEntry with varying numbers of entries (e.g. 10, 100, 1k).
-	•	Embedding memoization hit ratio under different workloads.
+ • matchBestEntry with varying numbers of entries (e.g. 10, 100, 1k).
+ • Embedding memoization hit ratio under different workloads.
 
 ⸻
 
@@ -202,15 +209,15 @@ Add micro-benchmarks for:
 ### 9.1 Cookbook Recipes
 
 Future docs could include:
-	•	“How to cache LLM summarization calls”
-	•	“How to do prompt-level fuzziness safely”
-	•	“How to tune thresholds and TTLs for your domain”
+ • “How to cache LLM summarization calls”
+ • “How to do prompt-level fuzziness safely”
+ • “How to tune thresholds and TTLs for your domain”
 
 ### 9.2 Visual Diagrams
 
 Add one or two architecture diagrams showing:
-	•	Call path for withCaching (miss vs exact vs fuzzy hit).
-	•	How services (EmbeddingsService, FuzzyCacheStoreService, FuzzyCacheService) relate.
+ • Call path for withCaching (miss vs exact vs fuzzy hit).
+ • How services (EmbeddingsService, FuzzyCacheStoreService, FuzzyCacheService) relate.
 
 ⸻
 
